@@ -67,12 +67,7 @@ weeklySchedule = """
             ["12:15", "12:40"],
             ["12:45", "13:40"],
             ["13:45", "14:40"],
-            ["14:45", "15:30"],
-            ["18:20", "18:35"],
-            ["18:40", "18:55"],
-            ["19:00", "19:15"],
-            ["19:20", "19:35"],
-            ["19:40", "19:55"]
+            ["14:45", "15:30"]
         ]
     },
     {
@@ -123,6 +118,8 @@ def uTimeNow():
 
 class period:
     def __init__(self, startTime, endTime):
+        self.startTxt = startTime
+        self.endTxt = endTime
         self.start = uTime(startTime)
         self.end = uTime(endTime)
 
@@ -166,6 +163,30 @@ class schedule:
         else:
             return self.days[d]["periods"][p]
 
+    def findPeriod3(self, tm = uTimeNow(), d=time.localtime().tm_wday):
+        # t is an instance of uTime
+        #tm = uTime(str(h)+":"+str(m))
+        activePeriod = None
+        passingTime = True
+        #print("d:", d, len(self.days))
+        p = self.days[d]["periods"]
+        #print("day", d, h, m, self.days[d]["day"], len(p))
+        for i in range(len(p)):
+            #print(h, p[i].start.hr, m, p[i].start.min, p[i].start.totMins)
+
+            if (tm.totMins >= p[i].start.totMins and tm.totMins <= p[i].end.totMins):
+                #print("findPeriod2 (start, tm, end):",  p[i].start.totMins, tm.totMins, p[i].end.totMins)
+                activePeriod = p[i]
+                passingTime = False
+                break
+
+            if i > 0:
+                if (tm.totMins > p[i-1].end.totMins and tm.totMins < p[i].start.totMins):
+                    activePeriod = period(p[i-1].endTxt, p[i].startTxt)
+                    break
+        return (activePeriod, i, passingTime)
+
+
 def startupSequence():
     for i in range(args.nPix):
         ledPix.light(i, (0, 200,200))
@@ -186,7 +207,7 @@ l_start = True
 while True:
     now = time.localtime()
     uNow = uTimeNow()
-    cp = s.getPeriod2(uNow)
+    (cp, pIndex, l_passing) = s.findPeriod3(uNow)
     if cp != None:
         #print(cp.start.hr, cp.start.min)
         frac = (uNow.totMins - cp.start.totMins) / (cp.end.totMins-cp.start.totMins)
@@ -202,9 +223,9 @@ while True:
             l_start = False
         else:
             ledPix.twoColors(nLights, doneColor, togoColor)
-        print(f'P: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%', end="\r", flush=True)
+        print(f'P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%', end="\r", flush=True)
 
     else:
         ledPix.setColor((0,0,100))
-        print("In between classes.", uNow.printTime())
+        print("Period not found:", uNow.printTime())
     time.sleep(10)
