@@ -196,6 +196,7 @@ def startupSequence():
 doneColor = (150, 0, 0)
 togoColor = (0, 150, 0)
 passColor = (0, 0, 150)
+passDoneColor = (0, 75, 75)
 
 s = schedule()
 print(s.days[0]["periods"][0].start.hr, s.days[0]["periods"][0].start.min)
@@ -222,13 +223,15 @@ while True:
         #     print("pixels not lit")
         if l_passing:
             leftColor = passColor
+            elapsedColor = passDoneColor
         else:
             leftColor = togoColor
+            elapsedColor = doneColor
         if l_start:
-            ledPix.twoColorsTimestep(nLights, leftColor, togoColor, 0.1)
+            ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.1)
             l_start = False
         else:
-            ledPix.twoColors(nLights, doneColor, leftColor)
+            ledPix.twoColors(nLights, elapsedColor, leftColor)
         print(f'P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%', end="\r", flush=True)
 
     else:
