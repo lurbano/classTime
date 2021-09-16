@@ -170,22 +170,32 @@ class schedule:
         #tm = uTime(str(h)+":"+str(m))
         activePeriod = None
         passingTime = True
+        beforeTime = False
+        afterTime = False
         #print("d:", d, len(self.days))
         p = self.days[d]["periods"]
         #print("day", d, h, m, self.days[d]["day"], len(p))
-        for i in range(len(p)):
-            #print(h, p[i].start.hr, m, p[i].start.min, p[i].start.totMins)
 
-            if (tm.totMins >= p[i].start.totMins and tm.totMins <= p[i].end.totMins):
-                #print("findPeriod2 (start, tm, end):",  p[i].start.totMins, tm.totMins, p[i].end.totMins)
-                activePeriod = p[i]
-                passingTime = False
-                break
+        # if before any periods
+        if (tm.totMins < p[0].start.totMins):
+            beforeTime = True
+            i = -1
 
-            if i > 0:
-                if (tm.totMins > p[i-1].end.totMins and tm.totMins < p[i].start.totMins):
-                    activePeriod = period(p[i-1].endTxt, p[i].startTxt)
+        else:
+
+            for i in range(len(p)):
+                #print(h, p[i].start.hr, m, p[i].start.min, p[i].start.totMins)
+
+                if (tm.totMins >= p[i].start.totMins and tm.totMins <= p[i].end.totMins):
+                    #print("findPeriod2 (start, tm, end):",  p[i].start.totMins, tm.totMins, p[i].end.totMins)
+                    activePeriod = p[i]
+                    passingTime = False
                     break
+
+                if i > 0:
+                    if (tm.totMins > p[i-1].end.totMins and tm.totMins < p[i].start.totMins):
+                        activePeriod = period(p[i-1].endTxt, p[i].startTxt)
+                        break
         return (activePeriod, i, passingTime)
 
 
@@ -213,27 +223,30 @@ while True:
     uNow = uTimeNow()
     (cp, pIndex, l_passing) = s.findPeriod3(uNow)
     if cp != None:
-        #print(cp.start.hr, cp.start.min)
-        frac = (uNow.totMins - cp.start.totMins) / (cp.end.totMins-cp.start.totMins)
-        #print("frac:", frac)
+        if (pIndex == -1):
+            print(f'Before First Period: {uNow.printTime()} - {cp.printTime}')
+        else:
+            #print(cp.start.hr, cp.start.min)
+            frac = (uNow.totMins - cp.start.totMins) / (cp.end.totMins-cp.start.totMins)
+            #print("frac:", frac)
 
-        nLights = min(int(frac*args.nPix), args.nPix)
-        # try:
-        #     ledPix.twoColors(nLights, (150,0,0), (0,150,0))
-        # except:
-        #     print("pixels not lit")
-        if l_passing:
-            leftColor = passColor
-            elapsedColor = passDoneColor
-        else:
-            leftColor = togoColor
-            elapsedColor = doneColor
-        if l_start:
-            ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.1)
-            l_start = False
-        else:
-            ledPix.twoColors(nLights, elapsedColor, leftColor)
-        print(f'P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%', end="\r", flush=True)
+            nLights = min(int(frac*args.nPix), args.nPix)
+            # try:
+            #     ledPix.twoColors(nLights, (150,0,0), (0,150,0))
+            # except:
+            #     print("pixels not lit")
+            if l_passing:
+                leftColor = passColor
+                elapsedColor = passDoneColor
+            else:
+                leftColor = togoColor
+                elapsedColor = doneColor
+            if l_start:
+                ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.1)
+                l_start = False
+            else:
+                ledPix.twoColors(nLights, elapsedColor, leftColor)
+            print(f'P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%', end="\r", flush=True)
 
     else:
         ledPix.setColor((0,0,100))
