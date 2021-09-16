@@ -181,6 +181,9 @@ class schedule:
             beforeTime = True
             i = -1
 
+        elif (tm.totMins > p[-1].end.totMins):
+            i = -2
+
         else:
 
             for i in range(len(p)):
@@ -223,8 +226,10 @@ while True:
     uNow = uTimeNow()
     (cp, pIndex, l_passing) = s.findPeriod3(uNow)
     if cp != None:
-        if (pIndex == -1):
+        if (pIndex == -1): # Before first period
             print(f'Before First Period: {uNow.printTime()} - {cp.printTime}')
+        elif (pIndex == -2): # After last period.
+            print(f'After Last Period: {uNow.printTime()} - {cp.printTime}')
         else:
             #print(cp.start.hr, cp.start.min)
             frac = (uNow.totMins - cp.start.totMins) / (cp.end.totMins-cp.start.totMins)
