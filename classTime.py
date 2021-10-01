@@ -15,7 +15,8 @@ try:
 except:
     print("ledPix not active")
 
-
+with open("outputTemplate.html", "r") as f:
+    htmlTemplate = f.read()
 
 weeklySchedule = """
 [
@@ -282,9 +283,14 @@ while True:
                 l_start = False
             else:
                 ledPix.twoColors(nLights, elapsedColor, leftColor)
-            print(f'P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%', end="\r", flush=True)
+            outputTxt = f'P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%'
+            print(outputTxt, end="\r", flush=True)
 
     else:
         ledPix.setColor((0,0,100))
-        print("Period not found:", uNow.printTime())
+        outputTxt = 'Period not found: {uNow.printTime()}'
+        print(outputTxt)
+    htmlTemplate.replace('{{status}}', outputTxt)
+    with open("output.html", "w") as f:
+        f.write(htmlTemplate)
     time.sleep(10)
