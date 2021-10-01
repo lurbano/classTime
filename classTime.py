@@ -292,5 +292,5 @@ while True:
         print(outputTxt)
     htmlTemplate.replace('<<status>>', outputTxt)
     with open("output.html", "w") as f:
-        f.write(htmlTemplate)
+        f.write(outputTxt)
     time.sleep(10)
