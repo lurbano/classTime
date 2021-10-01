@@ -290,7 +290,7 @@ while True:
         ledPix.setColor((0,0,100))
         outputTxt = 'Period not found: {uNow.printTime()}'
         print(outputTxt)
-    htmlTemplate.replace('{{status}}', outputTxt)
+    htmlTemplate.replace('<<status>>', outputTxt)
     with open("output.html", "w") as f:
         f.write(htmlTemplate)
     time.sleep(10)
