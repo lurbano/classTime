@@ -16,8 +16,8 @@ try:
 except:
     print("ledPix not active")
 
-realpath = os.path.realpath(__file__)
-print(f"PATH: {realpath}")
+currentDir = os.path.dirname(__file__).split('/')
+print(f"PATH: {currentDir}")
 with open("outputTemplate.html", "r") as f:
     htmlTemplate = f.read()
 
