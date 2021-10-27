@@ -39,6 +39,8 @@ weeklySchedule = """
     {
         "day": "Tuesday",
         "periods": [
+            ["8:00", "8:14"],
+            ["8:15", "8:29"],
             ["8:30", "9:25"],
             ["9:30", "10:25"],
             ["10:30", "11:25"],
@@ -211,7 +213,7 @@ class schedule:
         passingTime = True
         beforeTime = False
         afterTime = False
-        #print("d:", d, len(self.days))
+        #print("d:", d)
         p = self.days[d]["periods"]
         #print("day", d, h, m, self.days[d]["day"], len(p))
 
@@ -238,7 +240,7 @@ class schedule:
                     if (tm.totMins > p[i-1].end.totMins and tm.totMins < p[i].start.totMins):
                         activePeriod = period(p[i-1].endTxt, p[i].startTxt)
                         break
-        return (activePeriod, i, passingTime)
+        return (activePeriod, i, passingTime, d)
 
 
 def startupSequence():
@@ -263,7 +265,7 @@ l_start = True
 while True:
     now = time.localtime()
     uNow = uTimeNow()
-    (cp, pIndex, l_passing) = s.findPeriod3(uNow)
+    (cp, pIndex, l_passing, d) = s.findPeriod3(uNow)
     if cp != None:
         if (pIndex == -1): # Before first period
             print(f'Before First Period: {uNow.printTime()} - {cp.printTime}')
@@ -290,7 +292,7 @@ while True:
                 l_start = False
             else:
                 ledPix.twoColors(nLights, elapsedColor, leftColor)
-            outputTxt = f'P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%'
+            outputTxt = f'day:{d}|P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%'
             print(outputTxt, end="\r", flush=True)
 
     else:
