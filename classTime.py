@@ -17,8 +17,12 @@ except:
     print("ledPix not active")
 
 currentDir = os.path.dirname(os.path.realpath(__file__))
-print(f"PATH: {currentDir}")
-with open("outputTemplate.html", "r") as f:
+templateFileName = currentDir + '/outputTemplate.html'
+outFileName = currentDir + '/output.html'
+print(f"template: {templateFileName}")
+print(f'output.html: {outFileName}')
+
+with open(templateFileName, "r") as f:
     htmlTemplate = f.read()
 
 weeklySchedule = """
@@ -300,6 +304,6 @@ while True:
         outputTxt = 'Period not found: {uNow.printTime()}'
         print(outputTxt)
     htmlTemplate.replace('<<status>>', outputTxt)
-    with open("output.html", "w") as f:
+    with open(outFileName, "w") as f:
         f.write(outputTxt)
     time.sleep(10)
