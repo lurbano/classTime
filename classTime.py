@@ -210,7 +210,7 @@ class schedule:
         else:
             return self.days[d]["periods"][p]
 
-    def findPeriod3(self, tm = uTimeNow(), d=time.localtime().tm_wday):
+    def findPeriod3(self, tm = uTimeNow(), d=None):
         # t is an instance of uTime
         #tm = uTime(str(h)+":"+str(m))
         activePeriod = None
@@ -218,6 +218,10 @@ class schedule:
         beforeTime = False
         afterTime = False
         #print("d:", d)
+
+        if d == None:
+            d = time.localtime().tm_wday
+
         p = self.days[d]["periods"]
         #print("day", d, h, m, self.days[d]["day"], len(p))
 
