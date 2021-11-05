@@ -300,7 +300,7 @@ while True:
                 l_start = False
             else:
                 ledPix.twoColors(nLights, elapsedColor, leftColor)
-            outputTxt = f'day:{d}|P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%'
+            outputTxt = f'day:{s[d].day} ({d})|P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%'
             print(outputTxt, end="\r", flush=True)
 
     else:
