@@ -296,10 +296,10 @@ while True:
                 leftColor = togoColor
                 elapsedColor = doneColor
             if l_start:
-                ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.05)
+                ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.01)
                 l_start = False
             else:
-                ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.05)
+                ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.02)
             outputTxt = f'day:{s.days[d]["day"]} ({d})|P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%'
             print(outputTxt, end="\r", flush=True)
 
