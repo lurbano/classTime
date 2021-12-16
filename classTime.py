@@ -220,7 +220,7 @@ class schedule:
         else:
             return self.days[d]["periods"][p]
 
-    def findPeriod3(self, tm = uTimeNow(), d=time.localtime().tm_wday):
+    def findPeriod3(self, tm = uTimeNow(), d=None):
         # t is an instance of uTime
         #tm = uTime(str(h)+":"+str(m))
         activePeriod = None
@@ -228,6 +228,10 @@ class schedule:
         beforeTime = False
         afterTime = False
         #print("d:", d)
+
+        if d == None:
+            d = time.localtime().tm_wday
+
         p = self.days[d]["periods"]
         #print("day", d, h, m, self.days[d]["day"], len(p))
 
@@ -302,11 +306,11 @@ while True:
                 leftColor = togoColor
                 elapsedColor = doneColor
             if l_start:
-                ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.1)
+                ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.01)
                 l_start = False
             else:
-                ledPix.twoColors(nLights, elapsedColor, leftColor)
-            outputTxt = f'day:{d}|P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%'
+                ledPix.twoColorsTimestep(nLights, elapsedColor, leftColor, 0.02)
+            outputTxt = f'day:{s.days[d]["day"]} ({d})|P{pIndex}|{l_passing}: {uNow.printTime()} - {cp.printTxt()}, n={nLights}/{args.nPix}, frac: {round(frac*100)}%'
             print(outputTxt, end="\r", flush=True)
 
     else:
