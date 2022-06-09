@@ -2,8 +2,8 @@ import time
 import numpy as np
 import argparse
 import os
-
 import json
+
 
 # get number of pixels from the command line
 parser = argparse.ArgumentParser()
