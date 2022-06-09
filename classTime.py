@@ -5,7 +5,6 @@ import os
 
 import json
 
-
 # get number of pixels from the command line
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--nPix", default=20, type=int, help = "Number of LED Pixels.")
